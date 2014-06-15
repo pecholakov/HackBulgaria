@@ -1,2 +1,2 @@
-Hack-Bulgaria
-=============
+Core Java course - Hack Bulgaria
+=======
