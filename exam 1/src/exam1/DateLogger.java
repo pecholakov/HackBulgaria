@@ -2,7 +2,7 @@ package exam1;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 
 public class DateLogger extends Logger {
 
@@ -14,29 +14,11 @@ public class DateLogger extends Logger {
         super(level);
     }
     
-
     @Override
-    public void log(int level, String message) {
-
-        if (this.level >= level) {
-            System.out.println(formatedOutput(level, message));
-        }
-    }
-    
-    @Override
-    public void log(String message){
-        if (this.level >= DEFAULT_LEVEL) {
-            System.out.println(formatedOutput(DEFAULT_LEVEL, message));
-        }
-    }
-    
-    private StringBuilder formatedOutput(final int level, final String message){
+    protected void print(final int messageLevel, final String message){
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
-        Calendar cal = Calendar.getInstance();
-        StringBuilder output = new StringBuilder();
-        output.append(String.format("|%s|", dateFormat.format(cal.getTime())));
-        output.append(String.format("%s => %s", level, message));
-        
-        return output;
+        String date = dateFormat.format(new Date());
+        System.out.print(String.format("|%s| ", date));
+        super.print(messageLevel, message);
     }
 }
