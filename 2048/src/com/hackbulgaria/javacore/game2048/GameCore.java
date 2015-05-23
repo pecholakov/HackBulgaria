@@ -15,23 +15,23 @@ public class GameCore {
     private int biggestReachedTile = 0;
     private int score = 0;
     private Board board;
-    private Stack<Board> redoLog;
-    private Stack<Board> undoLog;
+    private Stack<State> redoLog;
+    private Stack<State> undoLog;
 
     public GameCore() {
         board = new Board();
-        redoLog = new Stack<Board>();
-        undoLog = new Stack<Board>();
         addNumber();
         addNumber();
-        undoLog.push(board.clone());
+        redoLog = new Stack<>();
+        undoLog = new Stack<>();
+        undoLog.push(new State(board.clone(), score, biggestReachedTile));
     }
 
-    private void setBoard(Board b) {
-        this.board = b;
-        undoLog.pop();
-        undoLog.push(b.clone());
-    }
+//    private void setBoard(Board b) {
+//        this.board = b;
+//        undoLog.pop();
+//        undoLog.push(new State(board.clone(), score, biggestReachedTile));
+//    }
 
     public Board getBoard() {
         return board;
@@ -79,9 +79,9 @@ public class GameCore {
         }
 
         if (!undoLog.empty()) {
-            if (!board.equals(undoLog.peek())) {
+            if (!board.equals(undoLog.peek().boardState)) {
                 addNumber();
-                undoLog.push(board.clone());
+                undoLog.push(new State(board.clone(), score, biggestReachedTile));
             }
         } else {
             addNumber();
@@ -92,14 +92,20 @@ public class GameCore {
     public void undo() {
         if (undoLog.size() >= 2) {
             redoLog.push(undoLog.pop());
-            board = undoLog.peek().clone();
+            State previous = undoLog.peek();
+            board = previous.boardState.clone();
+            score = previous.scoreState;
+            biggestReachedTile = previous.biggestReachedTileState;
         }
     }
 
     public void redo() {
         if (!redoLog.isEmpty()) {
-            board = redoLog.pop();
-            undoLog.push(board.clone());
+            State redo = redoLog.pop();
+            board = redo.boardState.clone();
+            score = redo.scoreState;
+            biggestReachedTile = redo.biggestReachedTileState;
+            undoLog.push(new State(board.clone(), score, biggestReachedTile));
         }
     }
 
@@ -216,7 +222,20 @@ public class GameCore {
             board.setNumber(generatedCoordinate[0], generatedCoordinate[1], numberToPlace);
         }
     }
-
+    
+    private class State {
+        Board boardState;
+        int scoreState;
+        int biggestReachedTileState;
+        
+        State(Board board, int score, int biggestReachedTile) {
+            boardState = board;
+            scoreState = score;
+            biggestReachedTileState = biggestReachedTile; 
+        }
+        
+    }
+    
     public void quit() {
         System.exit(0);
     }

@@ -14,8 +14,8 @@ public class CLI {
 
     public void visualize() throws IOException {
         ConsoleReader reader = new ConsoleReader();
-        //Scanner scan = new Scanner(System.in);
-        int key = 0;
+//        Scanner scan = new Scanner(System.in);
+        int key;
         printBoard();
         while (true) {
             if (controller.getGame().isWinning()) {
@@ -26,8 +26,8 @@ public class CLI {
                 break;
             } else {
                 key = reader.readVirtualKey();
-                //System.out.println("Make move====");
-                //key = scan.nextInt();
+//                System.out.println("Make move====");
+//                key = scan.nextInt();
                 controller.onPressedKey(key);
                 reader.clearScreen();
                 printBoard();
